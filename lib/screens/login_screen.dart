@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'main_shell.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -26,7 +27,12 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: Brightness.light,
+      ),
+      child: Scaffold(
       backgroundColor: Theme.of(context).cardColor,
 
       appBar: AppBar(
@@ -205,6 +211,7 @@ class LoginScreen extends StatelessWidget {
           ],
         ),
       ),
+    ),
     );
   }
 
