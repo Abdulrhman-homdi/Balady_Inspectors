@@ -39,11 +39,11 @@ class LoginScreen extends StatelessWidget {
           child: TextButton(
             onPressed: () {},
 
-            child: const Text(
+            child: Text(
               "العربية",
 
               style: TextStyle(
-                color: Color(0xFF2D9373),
+                color: Theme.of(context).colorScheme.primary,
                 fontWeight: FontWeight.bold,
                 fontFamily: 'IBMPlexSansArabic',
               ),
@@ -66,46 +66,35 @@ class LoginScreen extends StatelessWidget {
                 children: [
                   Image.asset(
                     'assets/images/logo.png',
-
                     height: 120,
-
                     fit: BoxFit.contain,
-
-                    errorBuilder: (context, error, stackTrace) => const Icon(
+                    errorBuilder: (context, error, stackTrace) => Icon(
                       Icons.account_balance,
                       size: 80,
-                      color: Color(0xFF2D9373),
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
-
                   const SizedBox(height: 16),
-
-                  const Text(
+                  Text(
                     "اسم الأمانة باللغة العربية",
-
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'IBMPlexSansArabic',
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
-
                   Container(
                     margin: const EdgeInsets.symmetric(vertical: 8),
-
                     width: 40,
                     height: 2.5,
-
                     decoration: BoxDecoration(
-                      color: const Color(0xFF2D9373),
-
+                      color: Theme.of(context).colorScheme.primary,
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
-
                   Text(
                     "Name of Municipality in English",
-
                     style: TextStyle(
                       fontSize: 14,
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -165,28 +154,13 @@ class LoginScreen extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               height: 56,
-
               child: ElevatedButton(
-                onPressed: () {
-                  _handleLogin(context);
-                },
-
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF2D9373),
-
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-
-                  elevation: 0,
-                ),
-
+                onPressed: () => _handleLogin(context),
                 child: Text(
                   "تسجيل الدخول",
-
                   style: TextStyle(
                     fontSize: 18,
-                    color: Theme.of(context).cardColor,
+                    color: Theme.of(context).colorScheme.onPrimary,
                     fontWeight: FontWeight.bold,
                     fontFamily: 'IBMPlexSansArabic',
                   ),

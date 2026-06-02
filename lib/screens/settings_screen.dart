@@ -164,7 +164,7 @@ class _ThemeOption extends StatelessWidget {
               value: index,
               groupValue: selected ? index : -1,
               onChanged: (_) => onTap(),
-              activeColor: const Color(0xFF2D9373),
+              activeColor: Theme.of(context).colorScheme.primary,
             ),
             Icon(icon, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 24),
             const SizedBox(width: 12),

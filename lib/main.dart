@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'core/theme_notifier.dart';
+import 'core/app_theme.dart';
 import 'screens/splash_screen.dart';
 
 void main() {
@@ -18,22 +19,8 @@ class IncidentMonitoringApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: 'نظام مراقبة البلاغات',
           themeMode: themeMode,
-          theme: ThemeData(
-            fontFamily: 'IBMPlexSansArabic',
-            primaryColor: const Color(0xFF2D9373),
-            colorScheme: ColorScheme.fromSeed(
-              seedColor: const Color(0xFF2D9373),
-              brightness: Brightness.light,
-            ),
-          ),
-          darkTheme: ThemeData(
-            fontFamily: 'IBMPlexSansArabic',
-            primaryColor: const Color(0xFF2D9373),
-            colorScheme: ColorScheme.fromSeed(
-              seedColor: const Color(0xFF2D9373),
-              brightness: Brightness.dark,
-            ),
-          ),
+          theme: buildLightTheme(),
+          darkTheme: buildDarkTheme(),
           home: const SplashScreen(),
         );
       },

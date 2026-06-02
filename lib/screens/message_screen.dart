@@ -15,8 +15,8 @@ class MessageScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF2D9373),
-        foregroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        foregroundColor: Theme.of(context).colorScheme.onPrimary,
         titleSpacing: 0,
         title: Row(
           children: [
@@ -135,7 +135,7 @@ class _MessageBubble extends StatelessWidget {
               fontSize: 11,
               fontWeight: FontWeight.w600,
               fontFamily: 'IBMPlexSansArabic',
-              color: isMe ? const Color(0xFF2D9373) : Theme.of(context).colorScheme.onSurfaceVariant,
+              color: isMe ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
           const SizedBox(height: 4),
@@ -147,7 +147,7 @@ class _MessageBubble extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: isMe ? const Color(0xFF2D9373) : Theme.of(context).cardColor,
+                    color: isMe ? Theme.of(context).colorScheme.primary : Theme.of(context).cardColor,
                     borderRadius: BorderRadius.only(
                       topLeft: const Radius.circular(12),
                       topRight: const Radius.circular(12),
@@ -183,7 +183,7 @@ class _MessageBubble extends StatelessWidget {
                           fontSize: 10,
                           fontFamily: 'IBMPlexSansArabic',
                           color: isMe
-                              ? Colors.white.withOpacity(0.7)
+                              ? Colors.white.withValues(alpha: 0.7)
                               : Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
                         ),
                       ),
@@ -245,12 +245,12 @@ class _MessageInput extends StatelessWidget {
           children: [
             Container(
               decoration: BoxDecoration(
-                color: const Color(0xFF2D9373),
+                color: Theme.of(context).colorScheme.primary,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: IconButton(
                 onPressed: () {},
-                icon: const Icon(Icons.send, color: Colors.white, size: 20),
+                  icon: Icon(Icons.send, color: Theme.of(context).colorScheme.onPrimary, size: 20),
               ),
             ),
             const SizedBox(width: 8),

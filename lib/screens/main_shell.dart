@@ -102,7 +102,7 @@ class _NavItem extends StatelessWidget {
             border: Border(
               top: BorderSide(
                 color: isActive
-                    ? const Color(0xFF1B8354)
+                    ? Theme.of(context).colorScheme.primary
                     : Colors.transparent,
                 width: 1,
               ),
@@ -118,8 +118,8 @@ class _NavItem extends StatelessWidget {
                       isActive ? activeIcon : icon,
                       size: 24,
                       color: isActive
-                          ? const Color(0xFF1B8354)
-                          : const Color(0xFF8E8E93),
+                          ? Theme.of(context).colorScheme.primary
+                          : Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
                     ),
                     const SizedBox(height: 4),
                     Text(
@@ -129,8 +129,8 @@ class _NavItem extends StatelessWidget {
                         fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
                         fontFamily: 'IBMPlexSansArabic',
                         color: isActive
-                            ? const Color(0xFF1B8354)
-                            : const Color(0xFF8E8E93),
+                            ? Theme.of(context).colorScheme.primary
+                            : Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
                       ),
                     ),
                   ],

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import '../models/ticket_model.dart';
 import '../services/api_service.dart';
+import '../core/app_theme.dart';
 import 'ticket_detail_screen.dart';
 
 class ReportsScreen extends StatefulWidget {
@@ -49,11 +50,11 @@ class _ReportsScreenState extends State<ReportsScreen> {
       counts[t.status] = (counts[t.status] ?? 0) + 1;
     }
     return [
-      _StatusData(label: 'جديد', count: counts['جديد'] ?? 0, color: 0xFF3B82F6),
-      _StatusData(label: 'قيد المعالجة', count: counts['قيد المعالجة'] ?? 0, color: 0xFFF59E0B),
-      _StatusData(label: 'متأخر', count: counts['متأخر'] ?? 0, color: 0xFFEF4444),
-      _StatusData(label: 'مصعد', count: counts['مصعد'] ?? 0, color: 0xFF8B5CF6),
-      _StatusData(label: 'منتهي', count: counts['منتهي'] ?? 0, color: 0xFF22C55E),
+      _StatusData(label: 'جديد', count: counts['جديد'] ?? 0, color: AppColors.statusNew),
+      _StatusData(label: 'قيد المعالجة', count: counts['قيد المعالجة'] ?? 0, color: AppColors.statusInProgress),
+      _StatusData(label: 'متأخر', count: counts['متأخر'] ?? 0, color: AppColors.statusDelayed),
+      _StatusData(label: 'مصعد', count: counts['مصعد'] ?? 0, color: AppColors.statusEscalated),
+      _StatusData(label: 'منتهي', count: counts['منتهي'] ?? 0, color: AppColors.statusCompleted),
     ];
   }
 
@@ -111,14 +112,14 @@ class _ReportsScreenState extends State<ReportsScreen> {
                   width: 36,
                   height: 36,
                   decoration: BoxDecoration(
-                    color: const Color(0xFF1B8354).withOpacity(0.1),
+                    color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   alignment: Alignment.center,
                   child: Icon(
                     Icons.refresh,
                     size: 20,
-                    color: const Color(0xFF1B8354).withOpacity(0.8),
+                    color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
                   ),
                 ),
               ),
@@ -192,12 +193,12 @@ class _ReportsScreenState extends State<ReportsScreen> {
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     color: isActive
-                        ? const Color(0xFF1B8354)
+                        ? Theme.of(context).colorScheme.primary
                         : Theme.of(context).colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(18),
                     border: Border.all(
                       color: isActive
-                          ? const Color(0xFF1B8354)
+                          ? Theme.of(context).colorScheme.primary
                           : Theme.of(context).dividerColor,
                     ),
                   ),
@@ -240,12 +241,12 @@ class _ReportsScreenState extends State<ReportsScreen> {
                       height: 40,
                       decoration: BoxDecoration(
                         color: isActive
-                            ? Color(status.color)
-                            : Color(status.color).withOpacity(0.1),
+                            ? status.color
+                            : status.color.withValues(alpha: 0.1),
                         shape: BoxShape.circle,
                         border: isActive
                             ? Border.all(
-                                color: Color(status.color), width: 2)
+                                color: status.color, width: 2)
                             : null,
                       ),
                       alignment: Alignment.center,
@@ -257,7 +258,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                           fontFamily: 'IBMPlexSansArabic',
                           color: isActive
                               ? Colors.white
-                              : Color(status.color),
+                              : status.color,
                         ),
                       ),
                     ),
@@ -269,7 +270,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                         fontWeight: FontWeight.w500,
                         fontFamily: 'IBMPlexSansArabic',
                         color: isActive
-                            ? Color(status.color)
+                            ? status.color
                             : Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                     ),
@@ -318,7 +319,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
 class _StatusData {
   final String label;
   final int count;
-  final int color;
+  final Color color;
 
   const _StatusData({
     required this.label,
@@ -425,7 +426,7 @@ class _TicketCard extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(
                     horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: statusColor.withOpacity(0.1),
+                  color: statusColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
@@ -461,7 +462,7 @@ class _TicketCard extends StatelessWidget {
                     },
                     style: OutlinedButton.styleFrom(
                       backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
-                      foregroundColor: const Color(0xFF1B8354),
+                      foregroundColor: Theme.of(context).colorScheme.primary,
                       side: BorderSide(color: Theme.of(context).dividerColor),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),

@@ -34,15 +34,15 @@ class Ticket {
   static Color colorForStatus(String status) {
     switch (status) {
       case 'جديد':
-        return const Color(0xFF3B82F6);
+        return const Color(0xFF2563EB);
       case 'قيد المعالجة':
         return const Color(0xFFF59E0B);
       case 'متأخر':
-        return const Color(0xFFEF4444);
+        return const Color(0xFFDC2626);
       case 'مصعد':
-        return const Color(0xFF8B5CF6);
+        return const Color(0xFF7C3AED);
       case 'منتهي':
-        return const Color(0xFF22C55E);
+        return const Color(0xFF16A34A);
       default:
         return const Color(0xFF6B7280);
     }

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import '../models/ticket_model.dart';
 import '../services/api_service.dart';
+import '../core/app_theme.dart';
 import 'ticket_detail_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -115,14 +116,14 @@ class _BrandHeader extends StatelessWidget {
                       width: 40,
                       height: 40,
                       decoration: BoxDecoration(
-                        color: const Color(0xFF1B8354).withOpacity(0.1),
+                        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       alignment: Alignment.center,
                       child: Icon(
                         Icons.refresh,
                         size: 22,
-                        color: const Color(0xFF1B8354).withOpacity(0.8),
+                        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
                       ),
                     ),
                   ),
@@ -131,14 +132,14 @@ class _BrandHeader extends StatelessWidget {
                     width: 56,
                     height: 56,
                     decoration: BoxDecoration(
-                      color: const Color(0xFF1B8354).withOpacity(0.1),
+                      color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     alignment: Alignment.center,
                     child: Icon(
                       Icons.account_balance,
                       size: 32,
-                      color: const Color(0xFF1B8354).withOpacity(0.6),
+                      color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.6),
                     ),
                   ),
                 ],
@@ -173,7 +174,7 @@ class _BrandHeader extends StatelessWidget {
                 ],
               ),
               const Spacer(),
-              const Icon(Icons.waving_hand, size: 20, color: Color(0xFFF59E0B)),
+              Icon(Icons.waving_hand, size: 20, color: AppColors.statusInProgress),
               const SizedBox(width: 8),
             ],
           ),
@@ -229,6 +230,7 @@ class _KpiSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final primary = Theme.of(context).colorScheme.primary;
     return Container(
       color: Theme.of(context).cardColor,
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
@@ -240,7 +242,7 @@ class _KpiSection extends StatelessWidget {
               value: '5.2',
               unit: 'يوم',
               footer: 'من $totalTickets بلاغ',
-              color: 0xFF1B8354,
+              color: primary,
             ),
           ),
           const SizedBox(width: 12),
@@ -250,7 +252,7 @@ class _KpiSection extends StatelessWidget {
               value: '52',
               unit: '%',
               footer: 'من $totalTickets بلاغ',
-              color: 0xFF1B8354,
+              color: primary,
             ),
           ),
         ],
@@ -264,7 +266,7 @@ class _KpiCard extends StatelessWidget {
   final String value;
   final String unit;
   final String footer;
-  final int color;
+  final Color color;
 
   const _KpiCard({
     required this.title,
@@ -312,7 +314,7 @@ class _KpiCard extends StatelessWidget {
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
                   fontFamily: 'IBMPlexSansArabic',
-                  color: Color(color),
+                  color: color,
                 ),
               ),
               const SizedBox(width: 2),
@@ -322,7 +324,7 @@ class _KpiCard extends StatelessWidget {
                   fontSize: 28,
                   fontWeight: FontWeight.w700,
                   fontFamily: 'IBMPlexSansArabic',
-                  color: Color(color),
+                  color: color,
                   height: 1,
                 ),
               ),
@@ -354,11 +356,11 @@ class _StatusCarousel extends StatelessWidget {
       counts[t.status] = (counts[t.status] ?? 0) + 1;
     }
     return [
-      _StatusBadgeData(label: 'جديد', count: counts['جديد'] ?? 0, color: 0xFF3B82F6),
-      _StatusBadgeData(label: 'قيد المعالجة', count: counts['قيد المعالجة'] ?? 0, color: 0xFFF59E0B),
-      _StatusBadgeData(label: 'متأخر', count: counts['متأخر'] ?? 0, color: 0xFFEF4444),
-      _StatusBadgeData(label: 'مصعد', count: counts['مصعد'] ?? 0, color: 0xFF8B5CF6),
-      _StatusBadgeData(label: 'منتهي', count: counts['منتهي'] ?? 0, color: 0xFF22C55E),
+      _StatusBadgeData(label: 'جديد', count: counts['جديد'] ?? 0, color: AppColors.statusNew),
+      _StatusBadgeData(label: 'قيد المعالجة', count: counts['قيد المعالجة'] ?? 0, color: AppColors.statusInProgress),
+      _StatusBadgeData(label: 'متأخر', count: counts['متأخر'] ?? 0, color: AppColors.statusDelayed),
+      _StatusBadgeData(label: 'مصعد', count: counts['مصعد'] ?? 0, color: AppColors.statusEscalated),
+      _StatusBadgeData(label: 'منتهي', count: counts['منتهي'] ?? 0, color: AppColors.statusCompleted),
     ];
   }
 
@@ -384,7 +386,7 @@ class _StatusCarousel extends StatelessWidget {
 class _StatusBadgeData {
   final String label;
   final int count;
-  final int color;
+  final Color color;
 
   const _StatusBadgeData({
     required this.label,
@@ -407,7 +409,7 @@ class _StatusBadge extends StatelessWidget {
           width: 40,
           height: 40,
           decoration: BoxDecoration(
-            color: Color(data.color).withOpacity(0.1),
+            color: data.color.withValues(alpha: 0.1),
             shape: BoxShape.circle,
           ),
           alignment: Alignment.center,
@@ -417,7 +419,7 @@ class _StatusBadge extends StatelessWidget {
               fontSize: 14,
               fontWeight: FontWeight.w700,
               fontFamily: 'IBMPlexSansArabic',
-              color: Color(data.color),
+              color: data.color,
             ),
           ),
         ),
@@ -604,7 +606,7 @@ class _TicketCard extends StatelessWidget {
                     },
                     style: OutlinedButton.styleFrom(
                       backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
-                      foregroundColor: const Color(0xFF1B8354),
+                      foregroundColor: Theme.of(context).colorScheme.primary,
                       side: BorderSide(color: Theme.of(context).dividerColor),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),

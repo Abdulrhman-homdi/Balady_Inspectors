@@ -134,11 +134,11 @@ class _ProfileCard extends StatelessWidget {
         children: [
           CircleAvatar(
             radius: 40,
-            backgroundColor: const Color(0xFF2D9373).withOpacity(0.1),
+            backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
             child: Icon(
               Icons.person,
               size: 40,
-              color: const Color(0xFF2D9373).withOpacity(0.5),
+              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
             ),
           ),
           const SizedBox(height: 12),
@@ -241,21 +241,21 @@ class _KpiCard extends StatelessWidget {
             children: [
               Text(
                 unit,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
                   fontFamily: 'IBMPlexSansArabic',
-                  color: Color(0xFF2D9373),
+                  color: Theme.of(context).colorScheme.primary,
                 ),
               ),
               const SizedBox(width: 2),
               Text(
                 value,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.w700,
                   fontFamily: 'IBMPlexSansArabic',
-                  color: Color(0xFF2D9373),
+                  color: Theme.of(context).colorScheme.primary,
                   height: 1,
                 ),
               ),
@@ -331,7 +331,7 @@ class _ContactCard extends StatelessWidget {
               Icon(
                 Icons.phone_outlined,
                 size: 20,
-                color: const Color(0xFF2D9373),
+                color: Theme.of(context).colorScheme.primary,
               ),
               const SizedBox(width: 8),
               Text(
@@ -405,7 +405,7 @@ class _AddressCard extends StatelessWidget {
               Icon(
                 Icons.location_on_outlined,
                 size: 20,
-                color: const Color(0xFF2D9373),
+                color: Theme.of(context).colorScheme.primary,
               ),
               const SizedBox(width: 8),
               Text(

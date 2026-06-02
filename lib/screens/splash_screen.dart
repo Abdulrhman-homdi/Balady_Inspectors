@@ -77,10 +77,10 @@ class _SplashScreenState extends State<SplashScreen> {
 
                   fit: BoxFit.contain,
 
-                  errorBuilder: (context, error, stackTrace) => const Icon(
+                  errorBuilder: (context, error, stackTrace) => Icon(
                     Icons.account_balance,
                     size: 100,
-                    color: Color(0xFF2D9373),
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
               ),
@@ -88,13 +88,14 @@ class _SplashScreenState extends State<SplashScreen> {
 
             const Spacer(),
 
-            const Text(
+            Text(
               "اسم الأمانة باللغة العربية",
 
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
                 fontFamily: 'IBMPlexSansArabic',
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
 
