@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Cairo', sans-serif;
+  --color-primary: #005088;
+  --color-secondary: #00A651;
+  --color-primary-light: #E8F0FE;
+  --color-bg: #F8F9FA;
+  --color-card: #FFFFFF;
+}
+
+body {
+  font-family: 'Cairo', sans-serif;
+  background-color: #F8F9FA;
+  margin: 0;
+}
+
+/* RTL overrides */
+[dir="rtl"] .ltr-force {
+  direction: ltr;
+  unicode-bidi: embed;
+}

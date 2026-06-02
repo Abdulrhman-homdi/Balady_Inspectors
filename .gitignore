@@ -1,0 +1,52 @@
+# ──────────── OS files ────────────
+.DS_Store
+*.class
+*.log
+*.pyc
+*.swp
+*.sw?
+
+# ──────────── IDE / Editor ────────────
+.atom/
+.build/
+.buildlog/
+.history
+.svn/
+.swiftpm/
+migrate_working_dir/
+*.iml
+*.ipr
+*.iws
+.idea/
+.vscode/
+
+# ──────────── Dependencies ────────────
+node_modules/
+.pub-cache/
+.pub/
+
+# ──────────── Environment ────────────
+.env
+.env.local
+backend/.env
+
+# ──────────── Build outputs ────────────
+/build/
+/coverage/
+dist/
+dist-ssr/
+
+# ──────────── Flutter / Dart ────────────
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.metadata
+*.symbols
+*.map.json
+
+# ──────────── Android Studio ────────────
+/android/app/debug
+/android/app/profile
+/android/app/release
