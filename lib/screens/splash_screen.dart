@@ -73,10 +73,10 @@ class _SplashScreenState extends State<SplashScreen> {
                 width: _isExpanded ? 160 : 100,
 
                 child: Image.asset(
-                  Theme.of(context).brightness == Brightness.dark
-                      ? 'assets/images/icon_dark.png'
-                      : 'assets/images/icon_light.png',
+                  'assets/images/logo.png',
+
                   fit: BoxFit.contain,
+
                   errorBuilder: (context, error, stackTrace) => Icon(
                     Icons.account_balance,
                     size: 100,

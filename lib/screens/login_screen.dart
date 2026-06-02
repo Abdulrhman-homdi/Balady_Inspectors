@@ -65,9 +65,7 @@ class LoginScreen extends StatelessWidget {
               child: Column(
                 children: [
                   Image.asset(
-                    Theme.of(context).brightness == Brightness.dark
-                        ? 'assets/images/icon_dark.png'
-                        : 'assets/images/icon_light.png',
+                    'assets/images/logo.png',
                     height: 120,
                     fit: BoxFit.contain,
                     errorBuilder: (context, error, stackTrace) => Icon(
