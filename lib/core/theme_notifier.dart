@@ -1,4 +1,4 @@
 import 'package:flutter/material.dart';
 
 final ValueNotifier<ThemeMode> themeNotifier =
-    ValueNotifier(ThemeMode.dark);
+    ValueNotifier(ThemeMode.system);
