@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'settings_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -42,16 +43,36 @@ class _TopBar extends StatelessWidget {
       color: Colors.white,
       child: Column(
         children: [
-          const Padding(
-            padding: EdgeInsets.fromLTRB(16, 12, 16, 4),
-            child: Text(
-              'معلوماتي',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.w700,
-                fontFamily: 'IBMPlexSansArabic',
-                color: Color(0xFF111827),
-              ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+            child: Row(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const SettingsScreen(),
+                      ),
+                    );
+                  },
+                  child: const Icon(
+                    Icons.settings_outlined,
+                    color: Color(0xFF6B7280),
+                    size: 26,
+                  ),
+                ),
+                const Spacer(),
+                const Text(
+                  'معلوماتي',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w700,
+                    fontFamily: 'IBMPlexSansArabic',
+                    color: Color(0xFF111827),
+                  ),
+                ),
+              ],
             ),
           ),
           const SizedBox(height: 4),

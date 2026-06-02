@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'core/theme_notifier.dart';
 import 'screens/splash_screen.dart';
 
 void main() {
@@ -10,15 +11,32 @@ class IncidentMonitoringApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'نظام مراقبة البلاغات',
-      theme: ThemeData(
-        // استخدم نفس الاسم (family) الذي عرفته في pubspec
-        fontFamily: 'IBMPlexSansArabic',
-        primaryColor: const Color(0xFF2D9373),
-      ),
-      home: const SplashScreen(), // نقطة الانطلاق
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: themeNotifier,
+      builder: (context, themeMode, _) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'نظام مراقبة البلاغات',
+          themeMode: themeMode,
+          theme: ThemeData(
+            fontFamily: 'IBMPlexSansArabic',
+            primaryColor: const Color(0xFF2D9373),
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: const Color(0xFF2D9373),
+              brightness: Brightness.light,
+            ),
+          ),
+          darkTheme: ThemeData(
+            fontFamily: 'IBMPlexSansArabic',
+            primaryColor: const Color(0xFF2D9373),
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: const Color(0xFF2D9373),
+              brightness: Brightness.dark,
+            ),
+          ),
+          home: const SplashScreen(),
+        );
+      },
     );
   }
 }
