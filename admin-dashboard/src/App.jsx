@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000/api';
+const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
 const STATUS_CONFIG = {
   'جديد': { color: 'bg-blue-100 text-blue-700', dot: 'bg-blue-500' },
@@ -95,7 +95,7 @@ export default function App() {
   };
 
   const kpis = [
-    { label: 'إجمالي البلاغات', count: tickets.length, color: 'text-[#005088]', bg: 'bg-[#E8F0FE]' },
+    { label: 'إجمالي البلاغات', count: tickets.length, color: 'text-[#1B8354]', bg: 'bg-[#E8F5EE]' },
     { label: 'جديد', count: tickets.filter((t) => t.status === 'جديد').length, color: 'text-blue-600', bg: 'bg-blue-50' },
     { label: 'قيد المعالجة', count: tickets.filter((t) => t.status === 'قيد المعالجة').length, color: 'text-orange-600', bg: 'bg-orange-50' },
     { label: 'متأخر', count: tickets.filter((t) => t.status === 'متأخر').length, color: 'text-red-600', bg: 'bg-red-50' },
@@ -143,8 +143,8 @@ function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 bg-[#E8F0FE] rounded-lg flex items-center justify-center">
-              <svg className="w-6 h-6 text-[#005088]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+            <div className="w-11 h-11 bg-[#E8F5EE] rounded-lg flex items-center justify-center">
+              <svg className="w-6 h-6 text-[#1B8354]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008Z" />
               </svg>
             </div>
@@ -154,7 +154,7 @@ function Header() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-[#005088] rounded-full flex items-center justify-center text-white text-sm font-bold">
+            <div className="w-8 h-8 bg-[#1B8354] rounded-full flex items-center justify-center text-white text-sm font-bold">
               ت
             </div>
             <span className="text-sm font-semibold text-gray-800">م. تركي بن عبدالرحمن</span>
@@ -193,7 +193,7 @@ function TicketForm({ form, onChange, onFileChange, onSubmit, submitting, fileIn
             value={form.title}
             onChange={onChange}
             placeholder="أدخل عنوان البلاغ"
-            className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#005088]/20 focus:border-[#005088]"
+            className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1B8354]/20 focus:border-[#1B8354]"
             required
           />
         </div>
@@ -203,7 +203,7 @@ function TicketForm({ form, onChange, onFileChange, onSubmit, submitting, fileIn
             name="category"
             value={form.category}
             onChange={onChange}
-            className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#005088]/20 focus:border-[#005088]"
+            className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1B8354]/20 focus:border-[#1B8354]"
             required
           >
             <option value="">اختر التصنيف</option>
@@ -219,7 +219,7 @@ function TicketForm({ form, onChange, onFileChange, onSubmit, submitting, fileIn
             accept="image/*"
             ref={fileInputRef}
             onChange={onFileChange}
-            className="w-full text-sm text-gray-500 file:ml-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[#005088]/10 file:text-[#005088] hover:file:bg-[#005088]/20 cursor-pointer"
+            className="w-full text-sm text-gray-500 file:ml-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[#1B8354]/10 file:text-[#1B8354] hover:file:bg-[#1B8354]/20 cursor-pointer"
           />
           <p className="text-xs text-gray-400 mt-1.5">الحد الأقصى لحجم الصورة الميدانية: 2 ميجابايت لحفظ المساحة السحابية</p>
           {form.imageUrl && (
@@ -238,14 +238,14 @@ function TicketForm({ form, onChange, onFileChange, onSubmit, submitting, fileIn
             onChange={onChange}
             rows={4}
             placeholder="أدخل تفاصيل البلاغ"
-            className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#005088]/20 focus:border-[#005088] resize-none"
+            className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1B8354]/20 focus:border-[#1B8354] resize-none"
             required
           />
         </div>
         <button
           type="submit"
           disabled={submitting}
-          className="w-full py-3 bg-[#005088] text-white font-bold rounded-lg text-sm hover:bg-[#003f6e] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+          className="w-full py-3 bg-[#1B8354] text-white font-bold rounded-lg text-sm hover:bg-[#146A43] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
         >
           {submitting && (
             <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -267,7 +267,7 @@ function TicketTable({ tickets, onStatusChange, onDelete, onViewDetails, onRefre
       <div className="flex items-center justify-between mb-5">
         <button
           onClick={onRefresh}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#005088] bg-[#E8F0FE] hover:bg-[#005088]/20 rounded-lg transition-colors"
+          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#1B8354] bg-[#E8F5EE] hover:bg-[#1B8354]/20 rounded-lg transition-colors"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182" />
@@ -326,14 +326,14 @@ function TicketTable({ tickets, onStatusChange, onDelete, onViewDetails, onRefre
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => onViewDetails(ticket)}
-                        className="text-xs px-3 py-1.5 bg-[#005088]/10 text-[#005088] hover:bg-[#005088]/20 rounded-md transition-colors font-semibold"
+                        className="text-xs px-3 py-1.5 bg-[#1B8354]/10 text-[#1B8354] hover:bg-[#1B8354]/20 rounded-md transition-colors font-semibold"
                       >
                         تفاصيل
                       </button>
                       <select
                         value={ticket.status}
                         onChange={(e) => onStatusChange(ticket._id, e.target.value)}
-                        className="text-xs px-2 py-1.5 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-[#005088]/20"
+                        className="text-xs px-2 py-1.5 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1B8354]/20"
                       >
                         <option value="جديد">جديد</option>
                         <option value="قيد المعالجة">قيد المعالجة</option>
