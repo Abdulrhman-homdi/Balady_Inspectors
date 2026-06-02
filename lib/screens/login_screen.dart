@@ -28,17 +28,16 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle(
-        statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
-        statusBarBrightness: isDark ? Brightness.light : Brightness.dark,
-      ),
-      child: Scaffold(
+    return Scaffold(
       backgroundColor: Theme.of(context).cardColor,
 
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+          statusBarBrightness: isDark ? Brightness.light : Brightness.dark,
+        ),
 
         leadingWidth: 100,
 
@@ -212,7 +211,6 @@ class LoginScreen extends StatelessWidget {
           ],
         ),
       ),
-    ),
     );
   }
 
