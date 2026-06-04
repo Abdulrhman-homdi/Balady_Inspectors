@@ -1,11 +1,11 @@
 {
-    "name": "incident_monitoring_system",
-    "short_name": "incident_monitoring_system",
+    "name": "Balady Inspector | مراقب بلدي",
+    "short_name": "مراقب بلدي",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Balady Inspector | مراقب بلدي",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

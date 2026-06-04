@@ -17,7 +17,7 @@ class IncidentMonitoringApp extends StatelessWidget {
       builder: (context, themeMode, _) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          title: 'نظام مراقبة البلاغات',
+          title: 'Balady Inspector | مراقب بلدي',
           themeMode: themeMode,
           theme: buildLightTheme(),
           darkTheme: buildDarkTheme(),
