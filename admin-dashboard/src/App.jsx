@@ -18,7 +18,10 @@ export default function App() {
   const [form, setForm] = useState({ title: '', category: '', description: '', imageUrl: '' });
   const [submitting, setSubmitting] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState(null);
+  const [editingTicket, setEditingTicket] = useState(null);
+  const [editForm, setEditForm] = useState({ title: '', description: '', status: '', imageUrl: '' });
   const fileInputRef = useRef(null);
+  const editFileInputRef = useRef(null);
 
   const fetchTickets = async () => {
     try {
@@ -83,6 +86,47 @@ export default function App() {
     }
   };
 
+  const openEditModal = (ticket) => {
+    setEditForm({ title: ticket.title, description: ticket.description || '', status: ticket.status, imageUrl: ticket.imageUrl || '' });
+    setEditingTicket(ticket);
+    if (editFileInputRef.current) editFileInputRef.current.value = '';
+  };
+
+  const handleEditInput = (e) => setEditForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+
+  const handleEditFileChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      alert('⚠️ حجم الصورة يتجاوز 2 ميجابايت');
+      if (editFileInputRef.current) editFileInputRef.current.value = '';
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      setEditForm((prev) => ({ ...prev, imageUrl: reader.result }));
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const updateTicket = async () => {
+    try {
+      const res = await axios.put(`${API_BASE}/tickets/update/${editingTicket._id}`, {
+        description: editForm.description,
+        imageUrl: editForm.imageUrl,
+        status: editForm.status,
+      });
+      if (res.data && res.data.success) {
+        await fetchTickets();
+        setEditingTicket(null);
+        alert('✅ تم تحديث البلاغ بنجاح');
+      }
+    } catch (err) {
+      console.error('Update Error:', err);
+      alert('فشل تحديث البلاغ');
+    }
+  };
+
   const updateStatus = async (id, newStatus) => {
     const prev = [...tickets];
     setTickets((prevList) => prevList.map((t) => (t._id === id ? { ...t, status: newStatus } : t)));
@@ -124,6 +168,7 @@ export default function App() {
               onStatusChange={updateStatus}
               onDelete={deleteTicket}
               onViewDetails={setSelectedTicket}
+              onEdit={openEditModal}
               onRefresh={fetchTickets}
             />
           </div>
@@ -131,6 +176,16 @@ export default function App() {
       </main>
       {selectedTicket && (
         <DetailModal ticket={selectedTicket} onClose={() => setSelectedTicket(null)} />
+      )}
+      {editingTicket && (
+        <EditModal
+          form={editForm}
+          onChange={handleEditInput}
+          onFileChange={handleEditFileChange}
+          onSave={updateTicket}
+          onClose={() => setEditingTicket(null)}
+          fileInputRef={editFileInputRef}
+        />
       )}
     </div>
   );
@@ -143,11 +198,7 @@ function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 bg-[#E8F5EE] rounded-lg flex items-center justify-center">
-              <svg className="w-6 h-6 text-[#1B8354]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008Z" />
-              </svg>
-            </div>
+            <img src="/balady-logo.png?v=3" alt="Balady" className="w-11 h-11 rounded-lg" />
             <div className="text-right">
               <h1 className="text-base font-bold text-gray-900">اسم الأمانة باللغة العربية</h1>
               <p className="text-xs text-gray-500">Name of Municipality in English</p>
@@ -212,24 +263,37 @@ function TicketForm({ form, onChange, onFileChange, onSubmit, submitting, fileIn
             ))}
           </select>
         </div>
-        <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-1.5">صورة البلاغ</label>
-          <input
-            type="file"
-            accept="image/*"
-            ref={fileInputRef}
-            onChange={onFileChange}
-            className="w-full text-sm text-gray-500 file:ml-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[#1B8354]/10 file:text-[#1B8354] hover:file:bg-[#1B8354]/20 cursor-pointer"
-          />
-          <p className="text-xs text-gray-400 mt-1.5">الحد الأقصى لحجم الصورة الميدانية: 2 ميجابايت لحفظ المساحة السحابية</p>
-          {form.imageUrl && (
-            <img
-              src={form.imageUrl}
-              alt="معاينة"
-              className="mt-2 w-full h-32 object-cover rounded-lg border border-gray-200"
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-1.5">صورة البلاغ</label>
+            <input
+              type="file"
+              accept="image/*"
+              ref={fileInputRef}
+              onChange={onFileChange}
+              className="w-full text-sm text-gray-500 file:ml-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[#1B8354]/10 file:text-[#1B8354] hover:file:bg-[#1B8354]/20 cursor-pointer"
             />
-          )}
-        </div>
+            <p className="text-xs text-gray-400 mt-1.5">الحد الأقصى لحجم الصورة الميدانية: 2 ميجابايت لحفظ المساحة السحابية</p>
+            <div className="flex items-center gap-2 my-3">
+              <div className="flex-1 h-px bg-gray-200" />
+              <span className="text-xs text-gray-400 font-medium">أو</span>
+              <div className="flex-1 h-px bg-gray-200" />
+            </div>
+            <input
+              type="url"
+              name="imageUrl"
+              value={form.imageUrl}
+              onChange={onChange}
+              placeholder="https://example.com/image.jpg"
+              className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1B8354]/20 focus:border-[#1B8354]"
+            />
+            {form.imageUrl && (
+              <img
+                src={form.imageUrl}
+                alt="معاينة"
+                className="mt-2 w-full h-32 object-cover rounded-lg border border-gray-200"
+              />
+            )}
+          </div>
         <div>
           <label className="block text-sm font-semibold text-gray-700 mb-1.5">تفاصيل البلاغ</label>
           <textarea
@@ -260,8 +324,109 @@ function TicketForm({ form, onChange, onFileChange, onSubmit, submitting, fileIn
   );
 }
 
+/* ── Edit Modal ── */
+function EditModal({ form, onChange, onFileChange, onSave, onClose, fileInputRef }) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={onClose}>
+      <div
+        className="bg-white rounded-xl shadow-2xl max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="p-6 space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-bold text-gray-900">تعديل البلاغ</h3>
+            <button onClick={onClose} className="p-1 text-gray-400 hover:text-gray-600 rounded-md">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-1.5">عنوان البلاغ</label>
+            <input
+              type="text"
+              name="title"
+              value={form.title}
+              disabled
+              className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm bg-gray-50 text-gray-500 cursor-not-allowed"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-1.5">الحالة</label>
+            <select
+              name="status"
+              value={form.status}
+              onChange={onChange}
+              className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1B8354]/20 focus:border-[#1B8354]"
+            >
+              <option value="جديد">جديد</option>
+              <option value="قيد المعالجة">قيد المعالجة</option>
+              <option value="متأخر">متأخر</option>
+              <option value="مصعد">مصعد</option>
+              <option value="منتهي">منتهي</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-1.5">الصورة المرفقة</label>
+            <input
+              type="file"
+              accept="image/*"
+              ref={fileInputRef}
+              onChange={onFileChange}
+              className="w-full text-sm text-gray-500 file:ml-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[#1B8354]/10 file:text-[#1B8354] hover:file:bg-[#1B8354]/20 cursor-pointer"
+            />
+            <p className="text-xs text-gray-400 mt-1.5">الحد الأقصى: 2 ميجابايت</p>
+            <div className="flex items-center gap-2 my-3">
+              <div className="flex-1 h-px bg-gray-200" />
+              <span className="text-xs text-gray-400 font-medium">أو</span>
+              <div className="flex-1 h-px bg-gray-200" />
+            </div>
+            <input
+              type="url"
+              name="imageUrl"
+              value={form.imageUrl}
+              onChange={onChange}
+              placeholder="https://example.com/image.jpg"
+              className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1B8354]/20 focus:border-[#1B8354]"
+            />
+            {form.imageUrl && (
+              <img
+                src={form.imageUrl}
+                alt="صورة البلاغ"
+                className="mt-2 w-full h-40 object-cover rounded-lg border border-gray-200"
+              />
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-1.5">تفاصيل البلاغ</label>
+            <textarea
+              name="description"
+              value={form.description}
+              onChange={onChange}
+              rows={4}
+              placeholder="أدخل تفاصيل البلاغ"
+              className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1B8354]/20 focus:border-[#1B8354] resize-none"
+            />
+          </div>
+
+          <button
+            onClick={onSave}
+            className="w-full py-3 bg-[#1B8354] text-white font-bold rounded-lg text-sm hover:bg-[#146A43] transition-colors"
+          >
+            حفظ التعديلات
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ── Ticket Table ── */
-function TicketTable({ tickets, onStatusChange, onDelete, onViewDetails, onRefresh }) {
+function TicketTable({ tickets, onStatusChange, onDelete, onViewDetails, onEdit, onRefresh }) {
   return (
     <div className="bg-white rounded-lg shadow-[0_4px_6px_-1px_rgba(0,0,0,0.05)] p-6">
       <div className="flex items-center justify-between mb-5">
@@ -329,6 +494,12 @@ function TicketTable({ tickets, onStatusChange, onDelete, onViewDetails, onRefre
                         className="text-xs px-3 py-1.5 bg-[#1B8354]/10 text-[#1B8354] hover:bg-[#1B8354]/20 rounded-md transition-colors font-semibold"
                       >
                         تفاصيل
+                      </button>
+                      <button
+                        onClick={() => onEdit(ticket)}
+                        className="text-xs px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-md transition-colors font-semibold"
+                      >
+                        تعديل
                       </button>
                       <select
                         value={ticket.status}

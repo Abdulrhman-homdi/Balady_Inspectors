@@ -5,7 +5,9 @@ import 'chats_screen.dart';
 import 'profile_screen.dart';
 
 class MainShell extends StatefulWidget {
-  const MainShell({super.key});
+  final bool isGuest;
+
+  const MainShell({super.key, this.isGuest = false});
 
   @override
   State<MainShell> createState() => _MainShellState();
@@ -14,18 +16,18 @@ class MainShell extends StatefulWidget {
 class _MainShellState extends State<MainShell> {
   int _currentIndex = 3;
 
-  final _screens = const [
-    ProfileScreen(),
-    ChatsScreen(),
-    ReportsScreen(),
-    HomeScreen(),
-  ];
-
   @override
   Widget build(BuildContext context) {
+    final screens = [
+      ProfileScreen(isGuest: widget.isGuest),
+      ChatsScreen(isGuest: widget.isGuest),
+      ReportsScreen(isGuest: widget.isGuest),
+      HomeScreen(isGuest: widget.isGuest),
+    ];
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: IndexedStack(index: _currentIndex, children: _screens),
+      body: IndexedStack(index: _currentIndex, children: screens),
       bottomNavigationBar: Container(
         color: Theme.of(context).cardColor,
         child: Column(

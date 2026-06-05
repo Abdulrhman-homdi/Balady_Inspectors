@@ -6,7 +6,9 @@ import '../core/app_theme.dart';
 import 'ticket_detail_screen.dart';
 
 class ReportsScreen extends StatefulWidget {
-  const ReportsScreen({super.key});
+  final bool isGuest;
+
+  const ReportsScreen({super.key, this.isGuest = false});
 
   @override
   State<ReportsScreen> createState() => _ReportsScreenState();
@@ -308,7 +310,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
           else
             ...filtered.map((t) => Padding(
               padding: const EdgeInsets.only(bottom: 12),
-              child: _TicketCard(ticket: t),
+              child: _TicketCard(ticket: t, isGuest: widget.isGuest),
             )),
         ],
       ),
@@ -330,8 +332,9 @@ class _StatusData {
 
 class _TicketCard extends StatelessWidget {
   final Ticket ticket;
+  final bool isGuest;
 
-  const _TicketCard({required this.ticket});
+  const _TicketCard({required this.ticket, this.isGuest = false});
 
   @override
   Widget build(BuildContext context) {
@@ -443,15 +446,16 @@ class _TicketCard extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Row(
-            children: List.generate(buttons.length, (i) {
+            children: List.generate(isGuest ? 1 : buttons.length, (i) {
+              final label = isGuest ? 'تفاصيل البلاغ' : buttons[i];
               return Expanded(
                 child: Padding(
                   padding: EdgeInsets.only(
-                    left: i < buttons.length - 1 ? 8 : 0,
+                    left: i < (isGuest ? 1 : buttons.length) - 1 ? 8 : 0,
                   ),
                   child: OutlinedButton(
                     onPressed: () {
-                      if (buttons[i] == 'تفاصيل البلاغ') {
+                      if (label == 'تفاصيل البلاغ') {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -470,7 +474,7 @@ class _TicketCard extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(vertical: 10),
                     ),
                     child: Text(
-                      buttons[i],
+                      label,
                       style: const TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,

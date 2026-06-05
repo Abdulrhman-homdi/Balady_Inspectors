@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'message_screen.dart';
 
 class ChatsScreen extends StatefulWidget {
-  const ChatsScreen({super.key});
+  final bool isGuest;
+
+  const ChatsScreen({super.key, this.isGuest = false});
 
   @override
   State<ChatsScreen> createState() => _ChatsScreenState();
@@ -72,6 +74,8 @@ class _ChatsScreenState extends State<ChatsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.isGuest) return _GuestChatsScreen();
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
@@ -111,6 +115,57 @@ class _ChatsScreenState extends State<ChatsScreen> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _GuestChatsScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: Directionality(
+              textDirection: TextDirection.rtl,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.chat_bubble_outline_rounded,
+                    size: 80,
+                    color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
+                  ),
+                  const SizedBox(height: 24),
+                  Text(
+                    'مرحباً بك في منصة بلدي',
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w700,
+                      fontFamily: 'IBMPlexSansArabic',
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'المحادثات الجماعية تمكّن الفرق الميدانية والإدارية من التنسيق المباشر حول البلاغات، مما يسرّع عملية الاستجابة ويتيح متابعة التحديثات أول بأول.\n\nللاستفادة من هذه الميزة، يرجى تسجيل الدخول بحسابك.',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontFamily: 'IBMPlexSansArabic',
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      height: 1.7,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );

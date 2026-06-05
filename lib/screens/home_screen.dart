@@ -6,7 +6,9 @@ import '../core/app_theme.dart';
 import 'ticket_detail_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final bool isGuest;
+
+  const HomeScreen({super.key, this.isGuest = false});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -47,20 +49,26 @@ class _HomeScreenState extends State<HomeScreen> {
           textDirection: TextDirection.rtl,
           child: _isLoading
               ? const Center(child: CircularProgressIndicator())
-              : RefreshIndicator(
-                  onRefresh: _loadTickets,
-                  child: SingleChildScrollView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    child: Column(
-                      children: [
-                        _BrandHeader(onRefresh: _loadTickets),
-                        const _SearchBar(),
-                        _KpiSection(totalTickets: _tickets.length),
-                        _StatusCarousel(tickets: _tickets),
-                        _RecentTickets(tickets: _tickets),
-                      ],
+              : Column(
+                  children: [
+                    _BrandHeader(onRefresh: _loadTickets),
+                    Expanded(
+                      child: RefreshIndicator(
+                        onRefresh: _loadTickets,
+                        child: SingleChildScrollView(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          child: Column(
+                            children: [
+                              const _SearchBar(),
+                              _KpiSection(totalTickets: _tickets.length),
+                              _StatusCarousel(tickets: _tickets),
+                              _RecentTickets(tickets: _tickets, isGuest: widget.isGuest),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
         ),
       ),
@@ -129,17 +137,17 @@ class _BrandHeader extends StatelessWidget {
                   ),
                   const SizedBox(width: 10),
                   Container(
-                    width: 56,
-                    height: 56,
+                    width: 48,
+                    height: 48,
+                    padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                      color: Theme.of(context).cardColor,
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    alignment: Alignment.center,
-                    child: Icon(
-                      Icons.account_balance,
-                      size: 32,
-                      color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.6),
+                    child: Image.asset(
+                      Theme.of(context).brightness == Brightness.dark
+                          ? 'assets/images/icon_dark.png'
+                          : 'assets/images/icon_light.png',
                     ),
                   ),
                 ],
@@ -440,8 +448,9 @@ class _StatusBadge extends StatelessWidget {
 
 class _RecentTickets extends StatelessWidget {
   final List<Ticket> tickets;
+  final bool isGuest;
 
-  const _RecentTickets({required this.tickets});
+  const _RecentTickets({required this.tickets, this.isGuest = false});
 
   @override
   Widget build(BuildContext context) {
@@ -468,7 +477,7 @@ class _RecentTickets extends StatelessWidget {
             else
               ...tickets.map((t) => Padding(
                     padding: const EdgeInsets.only(bottom: 12),
-                    child: _TicketCard(ticket: t),
+                    child: _TicketCard(ticket: t, isGuest: isGuest),
                   )),
           ],
         ),
@@ -479,8 +488,9 @@ class _RecentTickets extends StatelessWidget {
 
 class _TicketCard extends StatelessWidget {
   final Ticket ticket;
+  final bool isGuest;
 
-  const _TicketCard({required this.ticket});
+  const _TicketCard({required this.ticket, this.isGuest = false});
 
   @override
   Widget build(BuildContext context) {
@@ -587,15 +597,16 @@ class _TicketCard extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Row(
-            children: List.generate(buttons.length, (i) {
+            children: List.generate(isGuest ? 1 : buttons.length, (i) {
+              final label = isGuest ? 'تفاصيل البلاغ' : buttons[i];
               return Expanded(
                 child: Padding(
                   padding: EdgeInsets.only(
-                    left: i < buttons.length - 1 ? 8 : 0,
+                    left: i < (isGuest ? 1 : buttons.length) - 1 ? 8 : 0,
                   ),
                   child: OutlinedButton(
                     onPressed: () {
-                      if (buttons[i] == 'تفاصيل البلاغ') {
+                      if (label == 'تفاصيل البلاغ') {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -614,7 +625,7 @@ class _TicketCard extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(vertical: 10),
                     ),
                     child: Text(
-                      buttons[i],
+                      label,
                       style: const TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,

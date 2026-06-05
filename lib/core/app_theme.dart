@@ -10,7 +10,7 @@ class AppColors {
   static const lightOnPrimary = Color(0xFFFFFFFF);
   static const lightSecondary = Color(0xFF0F766E);
   static const lightSecondaryContainer = Color(0xFFD6F4F1);
-  static const lightBackground = Color(0xFFF8FAFC);
+  static const lightBackground = Color(0xFFFFFFFF);
   static const lightSurface = Color(0xFFFFFFFF);
   static const lightSurfaceVariant = Color(0xFFF1F5F9);
   static const lightCard = Color(0xFFFFFFFF);

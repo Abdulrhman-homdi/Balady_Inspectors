@@ -43,7 +43,19 @@ class LoginScreen extends StatelessWidget {
 
         leading: Center(
           child: TextButton(
-            onPressed: () {},
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: const Text(
+                    'تغيير اللغة سيكون متاحاً في الإصدار النهائي',
+                    textAlign: TextAlign.center,
+                  ),
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  behavior: SnackBarBehavior.floating,
+                  duration: const Duration(seconds: 2),
+                ),
+              );
+            },
 
             child: Text(
               "العربية",
@@ -196,7 +208,9 @@ class LoginScreen extends StatelessWidget {
                 onPressed: () {
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (_) => const MainShell()),
+                    MaterialPageRoute(
+                      builder: (_) => MainShell(isGuest: true),
+                    ),
                   );
                 },
 

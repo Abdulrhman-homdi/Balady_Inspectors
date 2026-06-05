@@ -1,34 +1,237 @@
 import 'package:flutter/material.dart';
 import 'settings_screen.dart';
+import 'login_screen.dart';
+import '../core/theme_notifier.dart';
 
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+  final bool isGuest;
+
+  const ProfileScreen({super.key, this.isGuest = false});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
-        child: Column(
-          children: [
-            _TopBar(),
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 16),
-                    _ProfileCard(),
-                    const SizedBox(height: 16),
-                    _KpiRow(),
-                    const SizedBox(height: 24),
-                    _DataSection(),
+        child: isGuest ? _GuestProfile() : _ProfileContent(),
+      ),
+    );
+  }
+}
+
+class _GuestProfile extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 32),
+        child: Directionality(
+          textDirection: TextDirection.rtl,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 88,
+                height: 88,
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Theme.of(context).shadowColor.withValues(alpha: 0.08),
+                      blurRadius: 10,
+                      offset: const Offset(0, 2),
+                    ),
                   ],
                 ),
+                child: Image.asset('assets/images/icon_light.png'),
               ),
-            ),
-          ],
+              const SizedBox(height: 24),
+              Text(
+                'مرحباً بك في منصة بلدي',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w700,
+                  fontFamily: 'IBMPlexSansArabic',
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'إذا كنت تريد الوصول الكامل للمنصة والتواصل مع الفرق، يرجى تسجيل الدخول بحسابك.',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontFamily: 'IBMPlexSansArabic',
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  height: 1.7,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 32),
+              _GuestThemeToggle(),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                height: 52,
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => LoginScreen(),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.login_rounded, size: 20),
+                  label: const Text(
+                    'تسجيل الدخول',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      fontFamily: 'IBMPlexSansArabic',
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
+      ),
+    );
+  }
+}
+
+class _GuestThemeToggle extends StatefulWidget {
+  @override
+  State<_GuestThemeToggle> createState() => _GuestThemeToggleState();
+}
+
+class _GuestThemeToggleState extends State<_GuestThemeToggle> {
+  @override
+  Widget build(BuildContext context) {
+    final isDark = themeNotifier.value == ThemeMode.dark;
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).shadowColor.withValues(alpha: 0.08),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Switch.adaptive(
+            value: isDark,
+            activeTrackColor: Theme.of(context).colorScheme.primary,
+            onChanged: (val) {
+              themeNotifier.value = val ? ThemeMode.dark : ThemeMode.light;
+            },
+          ),
+          Icon(
+            isDark ? Icons.dark_mode : Icons.light_mode,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+            size: 22,
+          ),
+          const Spacer(),
+          Text(
+            'المظهر',
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
+              fontFamily: 'IBMPlexSansArabic',
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ProfileContent extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        _TopBar(),
+        Expanded(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            child: Column(
+              children: [
+                const SizedBox(height: 16),
+                const _ProfileCard(),
+                const SizedBox(height: 16),
+                const _KpiRow(),
+                const SizedBox(height: 24),
+                const _DataSection(),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ProfileCard extends StatelessWidget {
+  const _ProfileCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).shadowColor.withValues(alpha: 0.08),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          CircleAvatar(
+            radius: 40,
+            backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+            child: Icon(
+              Icons.person,
+              size: 40,
+              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            'تركي بن عبدالرحمن',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
+              fontFamily: 'IBMPlexSansArabic',
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'رقم الموظف : 11022',
+            style: TextStyle(
+              fontSize: 14,
+              fontFamily: 'IBMPlexSansArabic',
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -103,61 +306,6 @@ class _TopBar extends StatelessWidget {
                   horizontal: 16,
                 ),
               ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ProfileCard extends StatelessWidget {
-  const _ProfileCard();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Theme.of(context).shadowColor.withValues(alpha: 0.08),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          CircleAvatar(
-            radius: 40,
-            backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
-            child: Icon(
-              Icons.person,
-              size: 40,
-              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
-            ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            'تركي بن عبدالرحمن',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
-              fontFamily: 'IBMPlexSansArabic',
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            'رقم الموظف : 11022',
-            style: TextStyle(
-              fontSize: 14,
-              fontFamily: 'IBMPlexSansArabic',
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
         ],
@@ -294,9 +442,9 @@ class _DataSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 12),
-        _ContactCard(),
+        const _ContactCard(),
         const SizedBox(height: 12),
-        _AddressCard(),
+        const _AddressCard(),
         const SizedBox(height: 16),
       ],
     );
