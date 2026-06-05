@@ -32,11 +32,11 @@ const ticketSchema = new mongoose.Schema({
   timestamps: true,
 });
 
-// تم الإصلاح هنا: إزالة الـ next() والاعتماد على الـ async النقي المتوافق مع Mongoose 9+
 ticketSchema.pre('save', async function () {
   if (!this.ticketId) {
-    const count = await mongoose.model('Ticket').countDocuments();
-    this.ticketId = `#${String(count + 1).padStart(6, '0')}`;
+    const last = await mongoose.model('Ticket').findOne({}, { ticketId: 1 }).sort({ ticketId: -1 });
+    const num = last ? parseInt(last.ticketId.replace('#', ''), 10) + 1 : 1;
+    this.ticketId = `#${String(num).padStart(6, '0')}`;
   }
 });
 
