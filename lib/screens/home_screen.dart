@@ -18,6 +18,9 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   List<Ticket> _tickets = [];
   bool _isLoading = true;
+  String _sortBy = 'الأولوية';
+
+  final _sortOptions = ['الأولوية', 'رقم البلاغ', 'الاسم', 'التصنيف'];
 
   @override
   void initState() {
@@ -44,10 +47,17 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     const priority = {'جديد': 0, 'متأخر': 1, 'مصعد': 2, 'قيد المعالجة': 3};
-    final activeTickets = _tickets
-        .where((t) => t.status != 'منتهي')
-        .toList()
-      ..sort((a, b) => (priority[a.status] ?? 99).compareTo(priority[b.status] ?? 99));
+    final activeTickets = _tickets.where((t) => t.status != 'منتهي').toList();
+    switch (_sortBy) {
+      case 'رقم البلاغ':
+        activeTickets.sort((a, b) => a.ticketId.compareTo(b.ticketId));
+      case 'الاسم':
+        activeTickets.sort((a, b) => a.title.compareTo(b.title));
+      case 'التصنيف':
+        activeTickets.sort((a, b) => a.category.compareTo(b.category));
+      default:
+        activeTickets.sort((a, b) => (priority[a.status] ?? 99).compareTo(priority[b.status] ?? 99));
+    }
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
@@ -68,6 +78,11 @@ class _HomeScreenState extends State<HomeScreen> {
                               const _SearchBar(),
                               _KpiSection(totalTickets: activeTickets.length),
                               _StatusCarousel(tickets: activeTickets),
+                              _SortSelector(
+                                value: _sortBy,
+                                options: _sortOptions,
+                                onChanged: (v) => setState(() => _sortBy = v),
+                              ),
                               _RecentTickets(tickets: activeTickets, isGuest: widget.isGuest),
                             ],
                           ),
@@ -448,6 +463,79 @@ class _StatusBadge extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _SortSelector extends StatelessWidget {
+  final String value;
+  final List<String> options;
+  final ValueChanged<String> onChanged;
+
+  const _SortSelector({
+    required this.value,
+    required this.options,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Theme.of(context).cardColor,
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+      child: Directionality(
+        textDirection: TextDirection.rtl,
+        child: Row(
+          children: [
+            Text(
+              'ترتيب حسب:',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                fontFamily: 'IBMPlexSansArabic',
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: options.map((opt) {
+                    final isActive = opt == value;
+                    return Padding(
+                      padding: const EdgeInsets.only(left: 6),
+                      child: GestureDetector(
+                        onTap: () => onChanged(opt),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: isActive
+                                ? Theme.of(context).colorScheme.primary
+                                : Theme.of(context).colorScheme.surfaceContainerHighest,
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Text(
+                            opt,
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              fontFamily: 'IBMPlexSansArabic',
+                              color: isActive
+                                  ? Colors.white
+                                  : Theme.of(context).colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
