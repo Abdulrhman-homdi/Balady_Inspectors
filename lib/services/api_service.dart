@@ -35,6 +35,9 @@ class ApiService {
     String assignee = '',
     String escalationReason = '',
     String targetEntity = '',
+    String completionReason = '',
+    String completionReport = '',
+    String notificationMessage = '',
   }) async {
     final payload = {
       'action': action,
@@ -44,6 +47,11 @@ class ApiService {
     if (action == 'تصعيد') {
       payload['escalationReason'] = escalationReason;
       payload['targetEntity'] = targetEntity;
+    }
+    if (action == 'إنهاء') {
+      payload['completionReason'] = completionReason;
+      payload['completionReport'] = completionReport;
+      payload['notificationMessage'] = notificationMessage;
     }
     final response = await http.put(
       Uri.parse('$baseUrl/action/$id'),

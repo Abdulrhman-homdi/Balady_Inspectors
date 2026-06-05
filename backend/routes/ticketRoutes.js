@@ -119,7 +119,7 @@ router.put('/progress/:id', async (req, res) => {
 // 6. تنفيذ إجراء على البلاغ (PUT)
 router.put('/action/:id', async (req, res) => {
   try {
-    const { action, details, assignee, escalationReason, targetEntity } = req.body;
+    const { action, details, assignee, escalationReason, targetEntity, completionReason, completionReport, notificationMessage } = req.body;
     const ticket = await Ticket.findById(req.params.id);
     if (!ticket) {
       return res.status(404).json({ success: false, message: 'البلاغ غير موجود' });
@@ -136,16 +136,27 @@ router.put('/action/:id', async (req, res) => {
     ticket.status = newStatus;
 
     let logDetails = details || '';
+    let logAssignee = assignee || '';
     if (action === 'تصعيد') {
       const reason = escalationReason || 'غير محدد';
       const entity = targetEntity || 'غير محدد';
       logDetails = `سبب التصعيد: ${reason}\nالجهة المصعد لها: ${entity}`;
+      logAssignee = targetEntity || '';
+    }
+    if (action === 'إنهاء') {
+      const reason = completionReason || 'غير محدد';
+      const report = completionReport || '';
+      const notify = notificationMessage || '';
+      let detailParts = [`سبب الإنهاء: ${reason}`];
+      if (report) detailParts.push(`قرار الإنهاء: ${report}`);
+      if (notify) detailParts.push(`الإشعار للمبلغ: ${notify}`);
+      logDetails = detailParts.join('\n');
     }
 
     ticket.progressLog.push({
       action,
       details: logDetails,
-      assignee: action === 'تصعيد' ? targetEntity || '' : (assignee || ''),
+      assignee: logAssignee,
       createdAt: new Date(),
     });
     if (action === 'تعيين' && assignee) {

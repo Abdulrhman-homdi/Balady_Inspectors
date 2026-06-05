@@ -151,12 +151,17 @@ export default function App() {
     }
   };
 
-  const handleTicketAction = async (id, action, details = '', assignee = '', escalationReason = '', targetEntity = '') => {
+  const handleTicketAction = async (id, action, details = '', assignee = '', escalationReason = '', targetEntity = '', completionReason = '', completionReport = '', notificationMessage = '') => {
     try {
       const payload = { action, details, assignee };
       if (action === 'تصعيد') {
         payload.escalationReason = escalationReason;
         payload.targetEntity = targetEntity;
+      }
+      if (action === 'إنهاء') {
+        payload.completionReason = completionReason;
+        payload.completionReport = completionReport;
+        payload.notificationMessage = notificationMessage;
       }
       const res = await axios.put(`${API_BASE}/tickets/action/${id}`, payload);
       if (res.data && res.data.success) {
@@ -525,10 +530,18 @@ function DetailModal({ ticket, onAction, onClose }) {
   const [inquiryInput, setInquiryInput] = useState('');
   const [escalationReason, setEscalationReason] = useState('');
   const [escalationEntity, setEscalationEntity] = useState('');
+  const [completionReason, setCompletionReason] = useState('');
+  const [completionReport, setCompletionReport] = useState('');
+  const [notificationMessage, setNotificationMessage] = useState('نود إشعارك بأنه تم مباشرة البلاغ رقم ');
 
   const escalateReasons = [
     'خارج الصلاحية', 'خطورة عالية', 'دعم قانوني', 'دعم أمني',
     'موارد إضافية', 'تكرار عالي', 'تعارض مصالح', 'أخرى',
+  ];
+
+  const completeReasons = [
+    'تم الحل', 'لا توجد مخالفة', 'بلاغ مكرر', 'بلاغ كيدي',
+    'خارج الاختصاص', 'تعذر الوصول',
   ];
 
   return (
@@ -623,12 +636,73 @@ function DetailModal({ ticket, onAction, onClose }) {
               <p className="text-sm font-semibold text-gray-700 mb-3 text-right">الإجراءات</p>
               <div className="flex flex-wrap gap-2">
                 {isInProgress && (
-                  <button onClick={() => onAction(ticket._id, 'إنهاء')} className="flex items-center gap-1.5 px-4 py-2 bg-green-600 text-white rounded-lg text-xs font-bold hover:bg-green-700 transition-colors">
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                    </svg>
-                    إنهاء البلاغ
-                  </button>
+                  <div className="relative group">
+                    <button className="flex items-center gap-1.5 px-4 py-2 bg-green-600 text-white rounded-lg text-xs font-bold hover:bg-green-700 transition-colors">
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                      </svg>
+                      إنهاء البلاغ
+                    </button>
+                    <div className="absolute bottom-full left-0 mb-2 hidden group-hover:block w-80">
+                      <div className="bg-white rounded-lg shadow-xl border border-gray-100 p-3 space-y-3">
+                        <div>
+                          <label className="block text-xs font-semibold text-gray-600 mb-1">سبب الإنهاء</label>
+                          <select
+                            value={completionReason}
+                            onChange={(e) => setCompletionReason(e.target.value)}
+                            className="w-full px-3 py-1.5 border border-gray-200 rounded text-xs focus:outline-none focus:ring-1 focus:ring-[#1B8354]"
+                          >
+                            <option value="">اختر السبب</option>
+                            {completeReasons.map((r) => (
+                              <option key={r} value={r}>{r}</option>
+                            ))}
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-xs font-semibold text-gray-600 mb-1">قرار الإنهاء</label>
+                          <textarea
+                            value={completionReport}
+                            onChange={(e) => setCompletionReport(e.target.value)}
+                            rows={3}
+                            placeholder="اكتب تقرير الإنهاء"
+                            className="w-full px-3 py-1.5 border border-gray-200 rounded text-xs resize-none focus:outline-none focus:ring-1 focus:ring-[#1B8354]"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-semibold text-gray-600 mb-1">الإشعار للمبلغ</label>
+                          <textarea
+                            value={notificationMessage}
+                            onChange={(e) => setNotificationMessage(e.target.value)}
+                            rows={2}
+                            className="w-full px-3 py-1.5 border border-gray-200 rounded text-xs resize-none focus:outline-none focus:ring-1 focus:ring-[#1B8354]"
+                          />
+                        </div>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => { setCompletionReason(''); setCompletionReport(''); setNotificationMessage('نود إشعارك بأنه تم مباشرة البلاغ رقم '); }}
+                            className="flex-1 py-1.5 bg-gray-100 text-gray-600 rounded text-xs font-bold hover:bg-gray-200"
+                          >
+                            إلغاء
+                          </button>
+                          <button
+                            onClick={() => {
+                              if (completionReason) {
+                                onAction(ticket._id, 'إنهاء', '', '', '', '',
+                                  completionReason, completionReport,
+                                  `${notificationMessage}${ticket.ticketId || ''}`
+                                );
+                                setCompletionReason(''); setCompletionReport('');
+                                setNotificationMessage('نود إشعارك بأنه تم مباشرة البلاغ رقم ');
+                              }
+                            }}
+                            className="flex-1 py-1.5 bg-green-600 text-white rounded text-xs font-bold hover:bg-green-700"
+                          >
+                            إنهاء
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 )}
                 {isNew && (
                   <button onClick={() => onAction(ticket._id, 'مباشرة')} className="flex items-center gap-1.5 px-4 py-2 bg-orange-600 text-white rounded-lg text-xs font-bold hover:bg-orange-700 transition-colors">

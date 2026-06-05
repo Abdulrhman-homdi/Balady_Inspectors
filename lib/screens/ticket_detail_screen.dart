@@ -42,7 +42,7 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
     super.dispose();
   }
 
-  Future<void> _handleAction(String action, {String details = '', String assignee = '', String escalationReason = '', String targetEntity = ''}) async {
+  Future<void> _handleAction(String action, {String details = '', String assignee = '', String escalationReason = '', String targetEntity = '', String completionReason = '', String completionReport = '', String notificationMessage = ''}) async {
     setState(() => _actionLoading = true);
     try {
       final updated = await ApiService.performAction(
@@ -52,6 +52,9 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
         assignee: assignee,
         escalationReason: escalationReason,
         targetEntity: targetEntity,
+        completionReason: completionReason,
+        completionReport: completionReport,
+        notificationMessage: notificationMessage,
       );
       if (mounted) {
         setState(() => _ticket = updated);
@@ -194,6 +197,98 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
                     foregroundColor: Colors.white,
                   ),
                   child: const Text('تصعيد'),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showCompletePopup() {
+    final defaultNotify = 'نود إشعارك بأنه تم مباشرة البلاغ ${_ticket.ticketId}';
+    String selectedReason = '';
+    final reportController = TextEditingController();
+    final notifyController = TextEditingController(text: defaultNotify);
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return Directionality(
+          textDirection: TextDirection.rtl,
+          child: StatefulBuilder(
+            builder: (context, setDialogState) => AlertDialog(
+              title: const Text('إنهاء البلاغ'),
+              content: SizedBox(
+                width: 400,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    const Text('سبب الإنهاء', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                    const SizedBox(height: 8),
+                    DropdownButtonFormField<String>(
+                      value: selectedReason.isEmpty ? null : selectedReason,
+                      decoration: const InputDecoration(
+                        hintText: 'اختر السبب',
+                        border: OutlineInputBorder(),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                      ),
+                      items: const [
+                        DropdownMenuItem(value: 'تم الحل', child: Text('تم الحل')),
+                        DropdownMenuItem(value: 'لا توجد مخالفة', child: Text('لا توجد مخالفة')),
+                        DropdownMenuItem(value: 'بلاغ مكرر', child: Text('بلاغ مكرر')),
+                        DropdownMenuItem(value: 'بلاغ كيدي', child: Text('بلاغ كيدي')),
+                        DropdownMenuItem(value: 'خارج الاختصاص', child: Text('خارج الاختصاص')),
+                        DropdownMenuItem(value: 'تعذر الوصول', child: Text('تعذر الوصول')),
+                      ],
+                      onChanged: (v) => setDialogState(() => selectedReason = v ?? ''),
+                    ),
+                    const SizedBox(height: 16),
+                    const Text('قرار الإنهاء', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                    const SizedBox(height: 8),
+                    TextField(
+                      controller: reportController,
+                      maxLines: 3,
+                      decoration: const InputDecoration(
+                        hintText: 'اكتب تقرير الإنهاء',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    const Text('الإشعار للمبلغ', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                    const SizedBox(height: 8),
+                    TextField(
+                      controller: notifyController,
+                      maxLines: 2,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(ctx),
+                  child: const Text('إلغاء'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    if (selectedReason.isNotEmpty) {
+                      Navigator.pop(ctx);
+                      _handleAction('إنهاء',
+                        completionReason: selectedReason,
+                        completionReport: reportController.text,
+                        notificationMessage: notifyController.text,
+                      );
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF16A34A),
+                    foregroundColor: Colors.white,
+                  ),
+                  child: const Text('إنهاء'),
                 ),
               ],
             ),
@@ -689,7 +784,7 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
                   label: 'إنهاء',
                   icon: Icons.check_circle_outline,
                   color: const Color(0xFF16A34A),
-                  onTap: () => _handleAction('إنهاء'),
+                  onTap: _showCompletePopup,
                 ),
               if (isNew)
                 _actionButton(
