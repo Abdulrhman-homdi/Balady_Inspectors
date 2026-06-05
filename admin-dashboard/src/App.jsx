@@ -249,7 +249,7 @@ function Header() {
           </div>
         </div>
       </div>
-    </div>
+    </header>
   );
 }
 
@@ -476,7 +476,7 @@ function TicketForm({ form, onChange, onFileChange, onSubmit, submitting, fileIn
           <div className="space-y-3">
             <div>
               <label className="block text-xs font-semibold text-gray-600 mb-1">العنوان</label>
-              <input type="text" name="address" value={form.address} onChange={onChange} placeholder例: شارع الملك فهد" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1B8354]/20 focus:border-[#1B8354]" />
+              <input type="text" name="address" value={form.address} onChange={onChange} placeholder="مثال: شارع الملك فهد" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1B8354]/20 focus:border-[#1B8354]" />
             </div>
             <div className="flex gap-3">
               <div className="flex-1">
