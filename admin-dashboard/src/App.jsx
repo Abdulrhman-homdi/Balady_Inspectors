@@ -244,6 +244,17 @@ function Header() {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <a
+              href="/app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#1B8354] bg-[#E8F5EE] hover:bg-[#1B8354]/20 rounded-lg transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
+              </svg>
+              التطبيق
+            </a>
             <div className="w-8 h-8 bg-[#1B8354] rounded-full flex items-center justify-center text-white text-sm font-bold">ت</div>
             <span className="text-sm font-semibold text-gray-800">م. تركي بن عبدالرحمن</span>
           </div>
