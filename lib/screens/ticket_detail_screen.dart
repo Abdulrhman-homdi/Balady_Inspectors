@@ -3,6 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import '../models/ticket_model.dart';
 import '../services/api_service.dart';
+import 'process_ticket_screen.dart';
 
 class TicketDetailScreen extends StatefulWidget {
   final Ticket ticket;
@@ -790,7 +791,31 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
                   label: 'مباشرة',
                   icon: Icons.bolt,
                   color: const Color(0xFFF59E0B),
-                  onTap: () => _handleAction('مباشرة'),
+                  onTap: () async {
+                    final result = await Navigator.push<bool>(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => ProcessTicketScreen(ticket: _ticket),
+                      ),
+                    );
+                    if (result == true && mounted) {
+                      _ticket = Ticket(
+                        id: _ticket.id,
+                        ticketId: _ticket.ticketId,
+                        title: _ticket.title,
+                        category: _ticket.category,
+                        status: 'قيد المعالجة',
+                        imageUrl: _ticket.imageUrl,
+                        description: _ticket.description,
+                        location: _ticket.location,
+                        progressLog: _ticket.progressLog,
+                      );
+                      setState(() {});
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('تم مباشرة البلاغ بنجاح')),
+                      );
+                    }
+                  },
                 ),
               if (isNew || isInProgress)
                 _actionButton(

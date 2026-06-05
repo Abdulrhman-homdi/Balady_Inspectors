@@ -249,7 +249,179 @@ function Header() {
           </div>
         </div>
       </div>
-    </header>
+    </div>
+  );
+}
+
+function ProcessTicketModal({ ticket, onAction, onClose }) {
+  const loc = ticket.location || {};
+  const [step, setStep] = useState(0);
+  const steps = [
+    'مراجعة بيانات النظام', 'التواصل مع الجهة المسؤولة', 'التوجه إلى مكان البلاغ',
+    'تصوير وتأكيد البلاغ', 'تحرير الضبط والتوقيع', 'رفع التقرير والإنهاء',
+  ];
+
+  const handleFinish = async () => {
+    await onAction(ticket._id, 'مباشرة');
+    onClose();
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={onClose}>
+      <div className="bg-white rounded-xl shadow-2xl max-w-3xl w-full mx-4 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+        {/* Progress Header */}
+        <div className="p-6 border-b border-gray-100">
+          <div className="flex items-center gap-1 mb-3">
+            {steps.map((s, i) => (
+              <div key={i} className={`h-1.5 flex-1 rounded-full ${i <= step ? 'bg-[#1B8354]' : 'bg-gray-200'}`} />
+            ))}
+          </div>
+          <h3 className="text-lg font-bold text-gray-900 text-right">{steps[step]}</h3>
+        </div>
+
+        {/* Content */}
+        <div className="p-6">
+          {step === 0 && (
+            <div className="text-right space-y-4">
+              <h4 className="font-bold text-gray-800">معلومات البلاغ</h4>
+              <div className="bg-gray-50 rounded-lg p-4 space-y-2 text-sm">
+                <p><span className="font-semibold text-gray-600">رقم البلاغ:</span> {ticket.ticketId}</p>
+                <p><span className="font-semibold text-gray-600">العنوان:</span> {ticket.title}</p>
+                <p><span className="font-semibold text-gray-600">التصنيف:</span> {ticket.category}</p>
+                <p><span className="font-semibold text-gray-600">الحالة:</span> {ticket.status}</p>
+              </div>
+              {ticket.description && (
+                <>
+                  <h4 className="font-bold text-gray-800">الوصف</h4>
+                  <p className="text-sm text-gray-600 bg-gray-50 rounded-lg p-4">{ticket.description}</p>
+                </>
+              )}
+              {ticket.imageUrl && (
+                <>
+                  <h4 className="font-bold text-gray-800">الصورة المرفقة</h4>
+                  <img src={ticket.imageUrl} alt="" className="w-full h-48 object-cover rounded-lg" />
+                </>
+              )}
+              {(loc.address || loc.district || loc.lat) && (
+                <>
+                  <h4 className="font-bold text-gray-800">موقع البلاغ</h4>
+                  <div className="bg-gray-50 rounded-lg p-4 text-sm space-y-1">
+                    {loc.address && <p><span className="font-semibold text-gray-600">العنوان:</span> {loc.address}</p>}
+                    {loc.district && <p><span className="font-semibold text-gray-600">الحي:</span> {loc.district}</p>}
+                    {loc.lat && <p><span className="font-semibold text-gray-600">الإحداثيات:</span> {loc.lat}, {loc.lng}</p>}
+                    {loc.landmark && <p><span className="font-semibold text-gray-600">معلم قريب:</span> {loc.landmark}</p>}
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+          {step === 1 && (
+            <div className="text-right space-y-4">
+              <h4 className="font-bold text-gray-800">التواصل مع الجهة المسؤولة</h4>
+              <div className="bg-gray-50 rounded-lg p-4 space-y-3">
+                <div>
+                  <label className="block text-xs font-semibold text-gray-600 mb-1">الجهة المسؤولة</label>
+                  <input type="text" placeholder="اسم الجهة" className="w-full px-3 py-2 border border-gray-200 rounded text-sm" />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-600 mb-1">ملاحظات التواصل</label>
+                  <textarea rows={3} placeholder="ملاحظات..." className="w-full px-3 py-2 border border-gray-200 rounded text-sm resize-none" />
+                </div>
+              </div>
+            </div>
+          )}
+          {step === 2 && (
+            <div className="text-right space-y-4">
+              <h4 className="font-bold text-gray-800">التوجه إلى مكان البلاغ</h4>
+              {loc.lat ? (
+                <div className="bg-gray-100 rounded-lg overflow-hidden">
+                  <iframe
+                    title="map"
+                    className="w-full h-56"
+                    loading="lazy"
+                    src={`https://www.openstreetmap.org/export/embed.html?bbox=${loc.lng - 0.01}%2C${loc.lat - 0.01}%2C${loc.lng + 0.01}%2C${loc.lat + 0.01}&layer=mapnik&marker=${loc.lat}%2C${loc.lng}`}
+                  />
+                  <div className="p-3 text-xs text-gray-600 space-y-1">
+                    {loc.address && <p><span className="font-semibold">العنوان:</span> {loc.address}</p>}
+                    {loc.district && <p><span className="font-semibold">الحي:</span> {loc.district}</p>}
+                    <p><span className="font-semibold">الإحداثيات:</span> {loc.lat}, {loc.lng}</p>
+                  </div>
+                </div>
+              ) : (
+                <p className="text-sm text-gray-400">لا توجد إحداثيات للموقع</p>
+              )}
+            </div>
+          )}
+          {step === 3 && (
+            <div className="text-right space-y-4">
+              <h4 className="font-bold text-gray-800">تصوير وتأكيد البلاغ</h4>
+              <div className="bg-gray-50 rounded-lg p-8 flex flex-col items-center gap-3">
+                <svg className="w-16 h-16 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z" />
+                </svg>
+                <p className="text-sm text-gray-500">التقط صورة لتأكيد البلاغ</p>
+                <button className="px-4 py-2 bg-[#1B8354] text-white rounded-lg text-xs font-bold">فتح الكاميرا</button>
+              </div>
+              <div className="bg-gray-50 rounded-lg p-4">
+                <label className="block text-xs font-semibold text-gray-600 mb-1">ملاحظات التصوير</label>
+                <textarea rows={2} placeholder="أضف ملاحظات..." className="w-full px-3 py-2 border border-gray-200 rounded text-sm resize-none" />
+              </div>
+            </div>
+          )}
+          {step === 4 && (
+            <div className="text-right space-y-4">
+              <h4 className="font-bold text-gray-800">تحرير الضبط والتوقيع</h4>
+              <div className="bg-gray-50 rounded-lg p-4">
+                <label className="block text-xs font-semibold text-gray-600 mb-1">محتوى الضبط</label>
+                <textarea rows={6} placeholder="اكتب محتوى الضبط هنا..." className="w-full px-3 py-2 border border-gray-200 rounded text-sm resize-none" />
+              </div>
+              <div className="bg-gray-50 rounded-lg p-4">
+                <h5 className="text-xs font-semibold text-gray-600 mb-2">التوقيع</h5>
+                <div className="border-2 border-dashed border-gray-300 rounded-lg h-32 flex items-center justify-center">
+                  <p className="text-xs text-gray-400">مكان التوقيع</p>
+                </div>
+              </div>
+            </div>
+          )}
+          {step === 5 && (
+            <div className="text-right space-y-4">
+              <h4 className="font-bold text-gray-800">ملخص مباشرة البلاغ</h4>
+              <div className="bg-gray-50 rounded-lg p-4 space-y-2 text-sm">
+                <p><span className="font-semibold text-gray-600">رقم البلاغ:</span> {ticket.ticketId}</p>
+                <p><span className="font-semibold text-gray-600">العنوان:</span> {ticket.title}</p>
+                <p><span className="font-semibold text-gray-600">التصنيف:</span> {ticket.category}</p>
+              </div>
+              <p className="text-xs text-gray-500 bg-blue-50 rounded-lg p-3">تم إتمام جميع الخطوات. سيتم تغيير حالة البلاغ إلى "قيد المعالجة".</p>
+              <div className="bg-gray-50 rounded-lg p-4">
+                <h5 className="text-xs font-semibold text-gray-600 mb-2">رفع التقرير</h5>
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 flex flex-col items-center gap-2">
+                  <svg className="w-10 h-10 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
+                  </svg>
+                  <button className="px-4 py-2 bg-[#1B8354] text-white rounded-lg text-xs font-bold">رفع التقرير</button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Bottom Nav */}
+        <div className="p-6 border-t border-gray-100 flex gap-3">
+          {step > 0 && (
+            <button onClick={() => setStep(step - 1)} className="flex-1 py-2.5 border border-gray-200 text-gray-700 rounded-lg text-sm font-bold hover:bg-gray-50">
+              رجوع
+            </button>
+          )}
+          <button
+            onClick={() => step < steps.length - 1 ? setStep(step + 1) : handleFinish()}
+            className="flex-1 py-2.5 bg-orange-600 text-white rounded-lg text-sm font-bold hover:bg-orange-700"
+          >
+            {step < steps.length - 1 ? 'التالي' : 'إنهاء'}
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -533,6 +705,7 @@ function DetailModal({ ticket, onAction, onClose }) {
   const [completionReason, setCompletionReason] = useState('');
   const [completionReport, setCompletionReport] = useState('');
   const [notificationMessage, setNotificationMessage] = useState('نود إشعارك بأنه تم مباشرة البلاغ رقم ');
+  const [showProcessModal, setShowProcessModal] = useState(false);
 
   const escalateReasons = [
     'خارج الصلاحية', 'خطورة عالية', 'دعم قانوني', 'دعم أمني',
@@ -703,12 +876,17 @@ function DetailModal({ ticket, onAction, onClose }) {
                   </div>
                 </div>
                 {isNew && (
-                  <button onClick={() => onAction(ticket._id, 'مباشرة')} className="flex items-center gap-1.5 px-4 py-2 bg-orange-600 text-white rounded-lg text-xs font-bold hover:bg-orange-700 transition-colors">
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
-                    </svg>
-                    مباشرة البلاغ
-                  </button>
+                  <>
+                    <button onClick={() => setShowProcessModal(true)} className="flex items-center gap-1.5 px-4 py-2 bg-orange-600 text-white rounded-lg text-xs font-bold hover:bg-orange-700 transition-colors">
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" />
+                      </svg>
+                      مباشرة البلاغ
+                    </button>
+                    {showProcessModal && (
+                      <ProcessTicketModal ticket={ticket} onAction={onAction} onClose={() => setShowProcessModal(false)} />
+                    )}
+                  </>
                 )}
                 {(isInProgress || isNew) && (
                   <div className="relative group">
