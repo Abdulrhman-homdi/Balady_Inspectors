@@ -1,5 +1,12 @@
 const mongoose = require('mongoose');
 
+const progressEntrySchema = new mongoose.Schema({
+  action: { type: String, required: true },
+  details: { type: String, default: '' },
+  assignee: { type: String, default: '' },
+  createdAt: { type: Date, default: Date.now },
+}, { _id: false });
+
 const ticketSchema = new mongoose.Schema({
   ticketId: {
     type: String,
@@ -28,6 +35,14 @@ const ticketSchema = new mongoose.Schema({
     type: String,
     default: '',
   },
+  location: {
+    address: { type: String, default: '' },
+    district: { type: String, default: '' },
+    lat: { type: Number, default: 24.7136 },
+    lng: { type: Number, default: 46.6753 },
+    landmark: { type: String, default: '' },
+  },
+  progressLog: [progressEntrySchema],
 }, {
   timestamps: true,
 });

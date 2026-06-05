@@ -459,7 +459,7 @@ class _TicketCard extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => TicketDetailScreen(ticket: ticket),
+                            builder: (_) => TicketDetailScreen(ticket: ticket, isGuest: isGuest),
                           ),
                         );
                       }

@@ -1,5 +1,57 @@
 import 'package:flutter/material.dart';
 
+class TicketLocation {
+  final String address;
+  final String district;
+  final double lat;
+  final double lng;
+  final String landmark;
+
+  const TicketLocation({
+    this.address = '',
+    this.district = '',
+    this.lat = 0,
+    this.lng = 0,
+    this.landmark = '',
+  });
+
+  factory TicketLocation.fromJson(Map<String, dynamic>? json) {
+    if (json == null) return const TicketLocation();
+    return TicketLocation(
+      address: json['address'] ?? '',
+      district: json['district'] ?? '',
+      lat: (json['lat'] ?? 0).toDouble(),
+      lng: (json['lng'] ?? 0).toDouble(),
+      landmark: json['landmark'] ?? '',
+    );
+  }
+}
+
+class ProgressEntry {
+  final String action;
+  final String details;
+  final String assignee;
+  final DateTime? createdAt;
+
+  const ProgressEntry({
+    this.action = '',
+    this.details = '',
+    this.assignee = '',
+    this.createdAt,
+  });
+
+  factory ProgressEntry.fromJson(Map<String, dynamic> json) {
+    return ProgressEntry(
+      action: json['action'] ?? '',
+      details: json['details'] ?? '',
+      assignee: json['assignee'] ?? '',
+      createdAt: json['createdAt'] != null
+          ? DateTime.tryParse(json['createdAt'].toString())
+          : null,
+    );
+  }
+}
+
 class Ticket {
   final String id;
   final String ticketId;
@@ -8,6 +60,8 @@ class Ticket {
   final String status;
   final String imageUrl;
   final String description;
+  final TicketLocation? location;
+  final List<ProgressEntry> progressLog;
 
   const Ticket({
     required this.id,
@@ -17,9 +71,15 @@ class Ticket {
     required this.status,
     this.imageUrl = '',
     this.description = '',
+    this.location,
+    this.progressLog = const [],
   });
 
   factory Ticket.fromJson(Map<String, dynamic> json) {
+    final progressList = (json['progressLog'] as List<dynamic>?)
+            ?.map((e) => ProgressEntry.fromJson(e as Map<String, dynamic>))
+            .toList() ??
+        [];
     return Ticket(
       id: json['_id'] ?? '',
       ticketId: json['ticketId'] ?? '',
@@ -28,6 +88,8 @@ class Ticket {
       status: json['status'] ?? '',
       imageUrl: json['imageUrl'] ?? '',
       description: json['description'] ?? '',
+      location: TicketLocation.fromJson(json['location'] as Map<String, dynamic>?),
+      progressLog: progressList,
     );
   }
 
