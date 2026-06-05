@@ -54,7 +54,31 @@ router.put('/update-status/:id', async (req, res) => {
   }
 });
 
-// 4. حذف بلاغ (DELETE)
+// 4. تحديث بلاغ كامل (PUT) - عنوان، وصف، صورة
+router.put('/update/:id', async (req, res) => {
+  try {
+    const updateFields = {};
+    if (req.body.title !== undefined) updateFields.title = req.body.title;
+    if (req.body.description !== undefined) updateFields.description = req.body.description;
+    if (req.body.imageUrl !== undefined) updateFields.imageUrl = req.body.imageUrl;
+    if (req.body.category !== undefined) updateFields.category = req.body.category;
+    if (req.body.status !== undefined) updateFields.status = req.body.status;
+
+    const ticket = await Ticket.findByIdAndUpdate(
+      req.params.id,
+      updateFields,
+      { new: true, runValidators: true }
+    );
+    if (!ticket) {
+      return res.status(404).json({ success: false, message: 'البلاغ غير موجود' });
+    }
+    res.json({ success: true, data: ticket });
+  } catch (err) {
+    res.status(400).json({ success: false, message: 'فشل في تحديث البلاغ', error: err.message });
+  }
+});
+
+// 5. حذف بلاغ (DELETE)
 router.delete('/:id', async (req, res) => {
   try {
     const ticket = await Ticket.findByIdAndDelete(req.params.id);
