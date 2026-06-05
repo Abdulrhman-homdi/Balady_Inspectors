@@ -6,7 +6,8 @@ import '../services/api_service.dart';
 
 class ProcessTicketScreen extends StatefulWidget {
   final Ticket ticket;
-  const ProcessTicketScreen({super.key, required this.ticket});
+  final bool isGuest;
+  const ProcessTicketScreen({super.key, required this.ticket, this.isGuest = false});
   @override
   State<ProcessTicketScreen> createState() => _ProcessTicketScreenState();
 }

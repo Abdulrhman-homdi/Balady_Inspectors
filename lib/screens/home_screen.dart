@@ -4,6 +4,7 @@ import '../models/ticket_model.dart';
 import '../services/api_service.dart';
 import '../core/app_theme.dart';
 import 'ticket_detail_screen.dart';
+import 'process_ticket_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final bool isGuest;
@@ -606,11 +607,18 @@ class _TicketCard extends StatelessWidget {
                   ),
                   child: OutlinedButton(
                     onPressed: () {
-                      if (label == 'تفاصيل البلاغ') {
+                      if (label == 'تفاصيل البلاغ' || label == 'عرض تفاصيل البلاغ' || label == 'متابعة الإجراءات' || label == 'متابعة حالة التصعيد') {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (_) => TicketDetailScreen(ticket: ticket, isGuest: isGuest),
+                          ),
+                        );
+                      } else if (label == 'مباشرة البلاغ' || label == 'مباشرة حالا') {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => ProcessTicketScreen(ticket: ticket, isGuest: isGuest),
                           ),
                         );
                       }
