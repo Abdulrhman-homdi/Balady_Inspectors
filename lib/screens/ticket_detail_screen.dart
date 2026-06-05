@@ -779,13 +779,12 @@ class _TicketDetailScreenState extends State<TicketDetailScreen> {
           scrollDirection: Axis.horizontal,
           child: Row(
             children: [
-              if (isInProgress)
-                _actionButton(
-                  label: 'إنهاء',
-                  icon: Icons.check_circle_outline,
-                  color: const Color(0xFF16A34A),
-                  onTap: _showCompletePopup,
-                ),
+              _actionButton(
+                label: 'إنهاء',
+                icon: Icons.check_circle_outline,
+                color: const Color(0xFF16A34A),
+                onTap: _showCompletePopup,
+              ),
               if (isNew)
                 _actionButton(
                   label: 'مباشرة',
